@@ -1,20 +1,25 @@
 {
   "type": "module",
   "name": "lscripts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "lscripts is a command tool that allows you to list and choose a script from your package.json easely.",
   "main": "lscripts.js",
   "bin": {
     "lscripts": "lscripts.js"
   },
+  "files": [
+    "lscripts.js",
+    "package.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "@julesfrn",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "clipboardy": "^3.0.0",
     "inquirer": "^9.1.4",
     "inquirer-autocomplete-prompt": "^3.0.0"
-  }
+  },
+  "keywords": ["lscripts", "cli"]
 }
