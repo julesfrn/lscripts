@@ -4,9 +4,24 @@ import inquirer from 'inquirer'
 import inquirerPrompt from 'inquirer-autocomplete-prompt'
 import clipboard from 'clipboardy'
 import fs from 'fs'
+import { exit } from 'process'
+
+const getPackageManagerEngine = () => {
+  if (fs.existsSync('./package-lock.json')) return 'npm'
+  if (fs.existsSync('./yarn.lock')) return 'yarn'
+  return null
+} 
+
+const runner = getPackageManagerEngine()
+
+if (!runner) {
+  console.log('Please install your dependencies before using lscripts.')
+  console.log('lscripts uses the lock file to determine which package manager you are using.')
+  console.log('lscripts is currently only compatible with npm and yarn.')
+  exit(1)
+}
 
 const scripts = Object.entries(JSON.parse(fs.readFileSync('./package.json')).scripts)
-const runner = fs.existsSync('./package-lock.json') ? 'npm' : 'yarn'
 
 const regex = /^(.+) -  /
 
