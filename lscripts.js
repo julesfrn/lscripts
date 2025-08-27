@@ -2,9 +2,9 @@
 
 import inquirer from 'inquirer'
 import inquirerPrompt from 'inquirer-autocomplete-prompt'
-import clipboard from 'clipboardy'
 import fs from 'fs'
 import { exit } from 'process'
+import { spawn } from 'child_process'
 
 const getPackageManagerEngine = () => {
   if (fs.existsSync('./package-lock.json')) return 'npm'
@@ -43,6 +43,12 @@ inquirer.prompt({
   pageSize: scripts.length,
   source
 }).then(({ script }) => {
-  clipboard.writeSync(`${runner} run ${script.match(regex)[1]}`)
-  console.log('✅ you can paste it and run it!')
+  const child = spawn(runner, ['run', script.match(regex)[1]], {
+    stdio: 'inherit',
+    shell: true
+  })
+
+  child.on('exit', (code) => {
+    process.exit(code);
+  })
 })

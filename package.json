@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "lscripts",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "lscripts is a command tool that allows you to list and choose a script from your package.json easely.",
   "main": "lscripts.js",
   "bin": {
@@ -25,7 +25,6 @@
     "cli"
   ],
   "dependencies": {
-    "clipboardy": "^3.0.0",
     "inquirer": "^9.1.4",
     "inquirer-autocomplete-prompt": "^3.0.0"
   },
