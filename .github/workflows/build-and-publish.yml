@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - lscripts.js
-      - package.json
-      - package-lock.json
-      - .github/workflows/build-and-publish.yml
-      - README.md
-      - LICENSE
 
 env:
   REGISTRY: ghcr.io
