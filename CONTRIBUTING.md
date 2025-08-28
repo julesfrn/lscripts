@@ -7,16 +7,11 @@ We welcome pull requests from everyone. Please follow these guidelines to ensure
 
 ## 🚀 How to Contribute
 
-1. **Clone** the repository:
-  ```sh
-  # with ssh
-  git clone git@github.com:julesfrn/lscripts.git
-  # with https
-  git clone https://github.com/julesfrn/lscripts.git
-  ```
-2. **Create a new branch** for your work
+1. **Fork** the repository
+2. **Clone** your fork
+2. **Create a new branch** for your work on your fork
 3. **Commit** your changes using [Conventional Commits](https://www.npmjs.com/package/@commitlint/config-conventional)
-4. **Push** your branch and **open** an mr to main
+4. **Push** your branch and **open** an PR to the main branch of this repo
 
 ## ✅ Pull Request Requirements
 
