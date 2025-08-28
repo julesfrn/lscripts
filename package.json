@@ -12,7 +12,8 @@
     "package.json"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
   },
   "author": "@julesfrn",
   "license": "MIT",
@@ -29,6 +30,9 @@
     "inquirer-autocomplete-prompt": "^3.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7",
     "semantic-release": "^24.2.7"
   }
 }
