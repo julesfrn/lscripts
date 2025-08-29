@@ -6,12 +6,34 @@ import fs from 'fs'
 import { exit } from 'process'
 import { spawn } from 'child_process'
 
-const getPackageManagerEngine = () => {
-  if (fs.existsSync('./package-lock.json')) return 'npm'
-  if (fs.existsSync('./yarn.lock')) return 'yarn'
-  if (fs.existsSync('./pnpm-lock.yaml')) return 'pnpm'
-  return null
-} 
+const rootDir = '/'
+
+const findPackageJsonInWorkingDirOrParent = (currentDir = './') => {
+  if (fs.existsSync(`${currentDir}package.json`)) return fs.readFileSync(`${currentDir}package.json`)
+  if (fs.realpathSync(currentDir) === rootDir) return null
+  return findPackageJsonInWorkingDirOrParent(`${currentDir}../`)
+}
+
+const getScriptsFromPackageJson = (packageJson) =>
+  Object.entries(JSON.parse(packageJson).scripts)
+
+const getPackageManagerEngine = (currentDir = './') => {
+  if (fs.existsSync(`${currentDir}package-lock.json`)) return 'npm'
+  if (fs.existsSync(`${currentDir}yarn.lock`)) return 'yarn'
+  if (fs.existsSync(`${currentDir}pnpm-lock.yaml`)) return 'pnpm'
+  if (fs.realpathSync(currentDir) === rootDir) return null
+  return getPackageManagerEngine((`${currentDir}../`))
+}
+
+const packageJson = findPackageJsonInWorkingDirOrParent()
+
+if (!packageJson) {
+  console.log('No package.json was found in current directory or parent directories.')
+  console.log('Make sure you are in a NodeJS project before running lscripts.')
+  exit(1)
+}
+
+const scripts = getScriptsFromPackageJson(packageJson)
 
 const runner = getPackageManagerEngine()
 
@@ -21,8 +43,6 @@ if (!runner) {
   console.log('lscripts is currently only compatible with npm, yarn and pnpm.')
   exit(1)
 }
-
-const scripts = Object.entries(JSON.parse(fs.readFileSync('./package.json')).scripts)
 
 const regex = /^(.+) -  /
 
