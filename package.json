@@ -1,17 +1,21 @@
 {
-  "type": "module",
+  "type": "commonjs",
   "name": "lscripts",
   "version": "1.0.0",
   "description": "lscripts is a command tool that allows you to list and choose a script from your package.json easely.",
-  "main": "lscripts.js",
+  "main": "./dist/main.js",
+  "exports": {
+    "require": "./dist/main.js"
+  },
   "bin": {
-    "lscripts": "lscripts.js"
+    "lscripts": "./dist/main.js"
   },
   "files": [
-    "lscripts.js",
+    "dist/*",
     "package.json"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },
@@ -26,14 +30,14 @@
     "cli"
   ],
   "dependencies": {
-    "clipboardy": "^4.0.0",
-    "inquirer": "^9.1.4",
-    "inquirer-autocomplete-prompt": "^3.0.0"
+    "@inquirer/search": "^3.1.1",
+    "clipboardy": "^4.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "husky": "^9.1.7",
-    "semantic-release": "^24.2.7"
+    "semantic-release": "^24.2.7",
+    "typescript": "^5.9.2"
   }
 }
