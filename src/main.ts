@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-import inquirer from 'inquirer'
-import inquirerPrompt from 'inquirer-autocomplete-prompt'
-import fs from 'fs'
-import { exit, argv } from 'process'
-import { spawn } from 'child_process'
+import search from '@inquirer/search'
 import clipboard from 'clipboardy'
-import lscriptsPackageJson from './package.json' with { type: "json" }
+
+import { existsSync, readFileSync, realpathSync } from 'node:fs'
+import { exit, argv } from 'node:process'
+import { spawn } from 'node:child_process'
+
+const pkg = require('../package.json')
 
 const rootDir = '/'
 
@@ -31,7 +32,7 @@ You can only pass one argument at a time to lscripts command.`)
 }
 
 const displayVersion = () => {
-  console.log(`You are currently using lscripts version ${lscriptsPackageJson.version}`)
+  console.log(`You are currently using lscripts version ${pkg.version}`)
   exit(0)
 }
 
@@ -62,18 +63,20 @@ const parseArguments = () => {
 }
 
 const findPackageJsonInWorkingDirOrParent = (currentDir = './') => {
-  if (fs.existsSync(`${currentDir}package.json`)) return JSON.parse(fs.readFileSync(`${currentDir}package.json`))
-  if (fs.realpathSync(currentDir) === rootDir) return null
+  if (existsSync(`${currentDir}package.json`))
+    return JSON.parse(readFileSync(`${currentDir}package.json`) as unknown as string)
+  if (realpathSync(currentDir) === rootDir) return null
   return findPackageJsonInWorkingDirOrParent(`${currentDir}../`)
 }
 
-const getScriptsFromPackageJson = (packageJson) => Object.entries(packageJson.scripts)
+const getScriptsFromPackageJson = (packageJson: { scripts: Record<string, string> }) =>
+  Object.entries(packageJson.scripts)
 
 const getPackageManagerEngine = (currentDir = './') => {
-  if (fs.existsSync(`${currentDir}package-lock.json`)) return 'npm'
-  if (fs.existsSync(`${currentDir}yarn.lock`)) return 'yarn'
-  if (fs.existsSync(`${currentDir}pnpm-lock.yaml`)) return 'pnpm'
-  if (fs.realpathSync(currentDir) === rootDir) return null
+  if (existsSync(`${currentDir}package-lock.json`)) return 'npm'
+  if (existsSync(`${currentDir}yarn.lock`)) return 'yarn'
+  if (existsSync(`${currentDir}pnpm-lock.yaml`)) return 'pnpm'
+  if (realpathSync(currentDir) === rootDir) return null
   return getPackageManagerEngine((`${currentDir}../`))
 }
 
@@ -100,27 +103,28 @@ if (!runner) {
 
 const regex = /^(.+) -  /
 
-const source = async (_, input) => {
-  return scripts.reduce((acc, [name, command]) => {
+process.on('uncaughtException', (error) => {
+  if (error instanceof Error && error.name === 'ExitPromptError')
+    console.log('👋 until next time!')
+  else throw error
+})
+
+const source = async (input: string | void) => {
+  return scripts.reduce<string[]>((acc, [name, command]) => {
     const script = `${name} -  "${command}"`
-    if (script.includes(input) || input === undefined) acc.push(script)
+    if (input === undefined || script.includes(input)) acc.push(script)
     return acc
   }, [])
 }
 
-inquirer.registerPrompt('autocomplete', inquirerPrompt)
-inquirer.prompt({
-  type: 'autocomplete',
-  name: 'script',
+search<string>({
   message: isCopyModeEnabled
     ? 'What script do you want to copy to your clipboard ?'
     : 'What script do you want to run ?',
-  emptyText: `Sorry, I couldn't find the script you are looking for...`,
-  searchText: 'Looking for the script...',
   pageSize: scripts.length,
   source
-}).then(({ script }) => {
-  const command = `${runner} run ${script.match(regex)[1]}`
+}).then((script) => {
+  const command = `${runner} run ${script.match(regex)![1]}`
 
   if (isCopyModeEnabled) {
     clipboard.writeSync(command)
