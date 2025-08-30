@@ -92,7 +92,7 @@ const scripts = getScriptsFromPackageJson(packageJson)
 const runner = getPackageManagerEngine()
 
 if (!runner) {
-  console.log('Please install your dependencies before using lscripts.')
+  console.log('Please install your dependencies at least once before using lscripts.')
   console.log('lscripts uses the lock file to determine which package manager you are using.')
   console.log('lscripts is currently only compatible with npm, yarn and pnpm.')
   exit(1)
