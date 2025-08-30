@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  lint-commits:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,3 +16,5 @@ jobs:
         run: npm ci
       - name: Lint commits
         run: npx commitlint --from=origin/main --to=HEAD
+      - name: Build
+        run: npm run build
