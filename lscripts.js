@@ -120,7 +120,7 @@ inquirer.prompt({
   pageSize: scripts.length,
   source
 }).then(({ script }) => {
-  const command = `🚀 ${runner} run ${script.match(regex)[1]}`
+  const command = `${runner} run ${script.match(regex)[1]}`
 
   if (isCopyModeEnabled) {
     clipboard.writeSync(command)
@@ -129,7 +129,7 @@ inquirer.prompt({
     return
   }
 
-  console.log(command)
+  console.log(`🚀 ${command}`)
   spawn(command, { stdio: 'inherit', shell: true })
     .on('exit', process.exit)
 })
