@@ -9,3 +9,10 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    # Les dependencies de prod sont embarquees dans le paquet publie : un bump
+    # doit sortir une nouvelle version npm, donc prefixe `fix` (release patch).
+    # Les devDependencies n'affectent que l'outillage : prefixe `chore`, pas de release.
+    commit-message:
+      prefix: "fix"
+      prefix-development: "chore"
+      include: "scope"
